@@ -5,18 +5,34 @@ void ofApp::setup(){
     /// Graphisme init  ///
     ofBackground(255, 255, 255);
     ofSetCircleResolution(60);
+
+    receive.setup(RECEIVER_PORT);
+    sender.setup( HOST, SENDER_PORT );
+
+
+    cout << "setup" << endl;
+
+
+    ofxOscMessage m;
+    m.setAddress( "/OPConnected" );
+    sender.sendMessage( m );
+
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    
+
+    while(receive.hasWaitingMessages()){
+        ofxOscMessage m;
+        receive.getNextMessage(&m);
+
+        cout << m.getAddress() << endl;
+    }
 
 }
 
 //--------------------------------------------------------------
-void ofApp::draw(){
-    
-}
+void ofApp::draw(){ }
 
 
 
@@ -24,7 +40,12 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+    if (key == OF_KEY_UP){
+        ofxOscMessage m;
+        m.setAddress( "/play" );
+        m.addStringArg( "c2" );
+        sender.sendMessage( m );
+    }
 }
 
 //--------------------------------------------------------------
@@ -73,6 +94,6 @@ void ofApp::gotMessage(ofMessage msg){
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
+void ofApp::dragEvent(ofDragInfo dragInfo){
 
 }
