@@ -1,7 +1,12 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxNetwork.h"
+#include "ofxOsc.h"
+
+#define HOST "localhost"
+
+#define SENDER_PORT 4444
+#define RECEIVER_PORT 5555
 
 class ofApp : public ofBaseApp{
 
@@ -22,5 +27,6 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
-        ofxTCPServer TCP;
+        ofxOscReceiver receive;
+        ofxOscSender sender;
 };

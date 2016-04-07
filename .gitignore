@@ -63,3 +63,7 @@ libs/openFrameworksCompiled/lib/*/*
 
 bin/ricochet_proto_echoDebug.app/**
 bin/ricochet_proto_echoDebug.app/Contents/MacOS/ricochet_proto_echoDebug
+
+### NODE.JS ###
+
+node_modules
