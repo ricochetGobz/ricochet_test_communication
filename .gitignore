@@ -64,11 +64,23 @@ libs/openFrameworksCompiled/lib/*/*
 bin/ricochet_proto_echoDebug.app/**
 bin/ricochet_proto_echoDebug.app/Contents/MacOS/ricochet_proto_echoDebug
 
+
 ### Server ###
 
-# node.js
+# NPM packages folder.
 server/node_modules/
 server/npm-debug.log
 
 # dist
 server/public/
+
+
+### Render ###
+
+# NPM packages folder.
+render/node_modules/
+render/npm-debug.log
+
+# Build
+render/public/style.css
+render/public/main.js
