@@ -1,12 +1,9 @@
 #pragma once
 
 #include "ofMain.h"
+#include "NodeBridge.h"
+
 #include "ofxOsc.h"
-
-#define HOST "localhost"
-
-#define SENDER_PORT 4444
-#define RECEIVER_PORT 5555
 
 class ofApp : public ofBaseApp{
 
@@ -14,6 +11,7 @@ class ofApp : public ofBaseApp{
     void setup();
     void update();
     void draw();
+    void exit();
 
     void keyPressed(int key);
     void keyReleased(int key);
@@ -25,8 +23,7 @@ class ofApp : public ofBaseApp{
     void mouseExited(int x, int y);
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
-    void gotMessage(ofMessage msg);
 
-    ofxOscReceiver receive;
-    ofxOscSender sender;
+private:
+    NodeBridge nodeBridge;
 };

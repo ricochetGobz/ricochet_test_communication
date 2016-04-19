@@ -6,34 +6,22 @@ void ofApp::setup(){
     ofBackground(255, 255, 255);
     ofSetCircleResolution(60);
 
-    receive.setup(RECEIVER_PORT);
-    sender.setup( HOST, SENDER_PORT );
-
-
     cout << "setup" << endl;
-
-
-    ofxOscMessage m;
-    m.setAddress( "/OPConnected" );
-    sender.sendMessage( m );
-
+    nodeBridge = *new NodeBridge();
+    nodeBridge.sendOPConnected();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
-    while(receive.hasWaitingMessages()){
-        ofxOscMessage m;
-        receive.getNextMessage(&m);
-
-        cout << m.getAddress() << endl;
-    }
-
+    nodeBridge.checkMessage();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){ }
 
+void ofApp::exit(){
+    nodeBridge.sendOPDisconnected();
+}
 
 
 
@@ -41,10 +29,7 @@ void ofApp::draw(){ }
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if (key == OF_KEY_UP){
-        ofxOscMessage m;
-        m.setAddress( "/play" );
-        m.addStringArg( "c2" );
-        sender.sendMessage( m );
+        nodeBridge.sendActivateCube("c1");
     }
 }
 
@@ -85,11 +70,6 @@ void ofApp::mouseExited(int x, int y){
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
 
 }
 
