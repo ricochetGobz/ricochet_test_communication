@@ -10,29 +10,23 @@
 
 //--------------------------------------------------------------
 NodeBridge::NodeBridge(){
-    receive.setup(RECEIVER_PORT);
+    //receive.setup(RECEIVER_PORT);
     sender.setup( HOST, SENDER_PORT );
-
+    sendOPConnected();
 }
 
-void NodeBridge::checkMessage() {
-
-    while(receive.hasWaitingMessages()){
-        cout << "received" << endl;
-        ofxOscMessage m;
-        receive.getNextMessage(&m);
-        
-        string address = m.getAddress();
-        cout << address << endl;
-        
-        if(address == SERVER_STARTED ) {
-            if(!serverStarted){
-                sendOPConnected();
-                serverStarted = true;
-            }
-        } else if ( address == SERVER_DOWN ) {
-            serverStarted = false;
+void NodeBridge::checkAddress(string address) {
+    
+    if(address == SERVER_STARTED ) {
+        cout << "Node server started" << endl;
+        if(!serverStarted){
+            cout << "Send" << endl;
+            sendOPConnected();
+            serverStarted = true;
         }
+    } else if ( address == SERVER_DOWN ) {
+        cout << "Node server down" << endl;
+        serverStarted = false;
     }
 }
 

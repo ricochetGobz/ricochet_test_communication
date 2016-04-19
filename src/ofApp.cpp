@@ -7,13 +7,23 @@ void ofApp::setup(){
     ofSetCircleResolution(60);
 
     cout << "setup" << endl;
+    
+    nodeBridge_receive.setup(RECEIVER_PORT);
     nodeBridge = *new NodeBridge();
-    nodeBridge.sendOPConnected();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    nodeBridge.checkMessage();
+    
+    //NODE BRIDGE CHECK MESSAGE RECEIVE
+    while(nodeBridge_receive.hasWaitingMessages()){
+        ofxOscMessage m;
+        nodeBridge_receive.getNextMessage(&m);
+        string address = m.getAddress();
+        cout << address << endl;
+        
+        nodeBridge.checkAddress(address);
+    }
 }
 
 //--------------------------------------------------------------
@@ -22,9 +32,6 @@ void ofApp::draw(){ }
 void ofApp::exit(){
     nodeBridge.sendOPDisconnected();
 }
-
-
-
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){

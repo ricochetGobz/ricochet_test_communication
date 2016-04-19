@@ -31,17 +31,16 @@ public:
     // Constructor
     NodeBridge();
     
-    ofxOscReceiver receive;
-    ofxOscSender sender;
-    
-    void setup();
-    void checkMessage();
+    void checkAddress(string address);
     void sendOPConnected();
     void sendOPDisconnected();
     void sendActivateCube(string msg);
     
+    
 private:
     bool serverStarted = false;
+    ofxOscReceiver receive; // DOESN T WORK HERE
+    ofxOscSender sender;
     
     void send(string address, string arg);
 };

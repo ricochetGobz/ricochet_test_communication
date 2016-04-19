@@ -4,5 +4,7 @@
   "globals": {
     "app": true
   },
-  "rules": {}
+  "rules": {
+    "no-console": 0
+  }
 }

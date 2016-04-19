@@ -1,46 +1,57 @@
-import osc from 'node-osc';
+/**
+ * app/server.js
+ *
+ * Base on node.js server
+ *
+ */
 
-const SENDER_PORT = 5555;
-const RECEIVER_PORT = 4444;
-
-const OPEN_FRAMEWORKS_CONNECTED = '/OPConnected';
-const PLAY = '/play';
+import OFBridge from './components/OFBridge';
 
 
-// SEND MESSAGE
-const client = new osc.Client('127.0.0.1', SENDER_PORT);
-client.send('/newCubeConnected', 'c1', () => {
-  client.kill();
+/**
+ * #########################
+ * OPEN FRAMEWORK COMMUNICATION
+ * #########################
+ */
+const _OFBridge = new OFBridge();
+
+_OFBridge.onOpenFrameworkConnected(() => {
+  console.log('OPEN FRAMEWORK IS CONNECTED');
+
+  // _OFBridge.sendNewCubeConnected('c1');
 });
 
-// RECEIVE MESSAGE
-const oscServer = new osc.Server(RECEIVER_PORT, '0.0.0.0');
-
-oscServer.on('message', (message, rinfo) => {
-  let msg = message;
-  // CHECK THE DATA STRUCTURE OF OSC MESSAGE
-  // Open Framework don't send the same array
-  if (msg[0] === '#bundle') {
-    msg = msg[2];
-  }
-
-  const url = msg[0];
-  const content = msg[1];
-
-  console.log('New Message to :', url);
-
-  switch (url) {
-    case OPEN_FRAMEWORKS_CONNECTED:
-      console.log('OpenFrameworks is connected !');
-      break;
-    case PLAY:
-      console.log(`OpenFramework wants to active the cube ${content}`);
-      break;
-    default:
-      console.warn('##### WARN');
-      console.warn(`The ${url} URL was not found :`);
-      console.warn(msg, rinfo);
-      console.warn('#####');
-      break;
-  }
+_OFBridge.onActivateCube((id) => {
+  console.log(`OpenFramework wants to activate the cube ${id}`);
+  // TODO send request to cube
+  // TODO send animation to webview
+  /*
+   * idCube
+   * idSound
+   * pos.x, pos.y
+   */
 });
+
+_OFBridge.sendServerStarted();
+
+/**
+ * #########################
+ * ON EXIT
+ * #########################
+ * http://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
+ */
+function exit(options, err) {
+  _OFBridge.sendServerDown();
+  setTimeout(() => {
+    if (err) console.log(err.stack);
+    if (options.exit) process.exit();
+  }, 200);
+}
+// so the program will not close instantly
+process.stdin.resume();
+// do something when app is closing
+// process.on('exit', exit.bind(null, { exit: true }));
+// catches ctrl+c event
+process.on('SIGINT', exit.bind(null, { exit: true }));
+// catches uncaught exceptions
+process.on('uncaughtException', exit.bind(null, { exit: true }));

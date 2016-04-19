@@ -2,8 +2,9 @@
 
 #include "ofMain.h"
 #include "NodeBridge.h"
-
 #include "ofxOsc.h"
+
+#define RECEIVER_PORT 5555
 
 class ofApp : public ofBaseApp{
 
@@ -23,7 +24,9 @@ class ofApp : public ofBaseApp{
     void mouseExited(int x, int y);
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
-
-private:
+    
+  private:
     NodeBridge nodeBridge;
+    // !!!! THE RECEIVER DOESN'T WORK INTO NODEBRIGDE
+    ofxOscReceiver nodeBridge_receive;
 };
