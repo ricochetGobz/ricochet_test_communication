@@ -39,19 +39,22 @@ _OFBridge.sendServerStarted();
  * ON EXIT
  * #########################
  * http://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
+ * http://stackoverflow.com/questions/21271227/can-node-js-detect-when-it-is-closed
  */
 function exit(options, err) {
   _OFBridge.sendServerDown();
   setTimeout(() => {
     if (err) console.log(err.stack);
-    if (options.exit) process.exit();
+    process.exit();
   }, 200);
 }
 // so the program will not close instantly
 process.stdin.resume();
 // do something when app is closing
-// process.on('exit', exit.bind(null, { exit: true }));
+// process.on('exit', exit);
 // catches ctrl+c event
-process.on('SIGINT', exit.bind(null, { exit: true }));
+process.on('SIGINT', exit);
+// catches closed windows
+process.on('SIGHUP', exit);
 // catches uncaught exceptions
-process.on('uncaughtException', exit.bind(null, { exit: true }));
+process.on('uncaughtException', exit);
