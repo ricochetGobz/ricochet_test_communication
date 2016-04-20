@@ -35,6 +35,7 @@ public:
     void sendOPConnected();
     void sendOPDisconnected();
     void sendActivateCube(string msg);
+    bool isStarted();
     
     
 private:

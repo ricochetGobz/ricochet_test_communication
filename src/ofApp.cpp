@@ -27,7 +27,20 @@ void ofApp::update(){
 }
 
 //--------------------------------------------------------------
-void ofApp::draw(){ }
+void ofApp::draw(){
+    ofBackground(255);
+    
+    // COMMUNICATION INFORMATION
+    ofSetColor(0);
+    stringstream reportStream;
+    string serverStarted = (nodeBridge.isStarted())?"ON":"OFF";
+    reportStream << "Node.js Server: " << serverStarted << endl
+    << "Web Render: " << "???" << endl
+    << "Kinect: " << "???" << endl;
+
+    ofDrawBitmapString(reportStream.str(), 10, 20);
+
+}
 
 void ofApp::exit(){
     nodeBridge.sendOPDisconnected();

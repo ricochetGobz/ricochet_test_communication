@@ -50,3 +50,7 @@ void NodeBridge::send(string address, string arg) {
     }
     sender.sendMessage( m );
 }
+
+bool NodeBridge::isStarted() {
+    return serverStarted;
+}
