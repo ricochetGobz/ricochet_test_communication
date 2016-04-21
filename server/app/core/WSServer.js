@@ -8,7 +8,7 @@
 import { server as WebSocketServer } from 'websocket';
 import http from 'http';
 import fs from 'fs';
-import utils from '../core/utils';
+import utils from './utils';
 
 // TODO utiliser express peut être a la place de http seulement.
 

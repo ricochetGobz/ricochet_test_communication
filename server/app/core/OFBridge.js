@@ -7,7 +7,7 @@
  */
 
 import osc from 'node-osc';
-import utils from '../core/utils';
+import utils from './utils';
 
 const SENDER_PORT = 5555;
 const RECEIVER_PORT = 4444;

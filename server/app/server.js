@@ -5,8 +5,8 @@
  *
  */
 
-import OFBridge from './components/OFBridge';
-import WSServer from './components/WSServer';
+import OFBridge from './core/OFBridge';
+import WSServer from './core/WSServer';
 import Cube from './components/Cube';
 
 const cubes = {};
