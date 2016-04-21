@@ -34,8 +34,9 @@ void ofApp::draw(){
     ofSetColor(0);
     stringstream reportStream;
     string serverStarted = (nodeBridge.isStarted())?"ON":"OFF";
+    string webRenderConnected = (nodeBridge.webRenderIsConnected())?"ON":"OFF";
     reportStream << "Node.js Server: " << serverStarted << endl
-    << "Web Render: " << "???" << endl
+    << "Web Render: " << webRenderConnected << endl
     << "Kinect: " << "???" << endl;
 
     ofDrawBitmapString(reportStream.str(), 10, 20);

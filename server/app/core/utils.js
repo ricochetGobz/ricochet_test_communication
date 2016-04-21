@@ -7,11 +7,14 @@
 
 const util = {
   logError: (message) => {
-    console.warn('');
-    console.warn('##### ERROR');
-    console.warn(message);
-    console.warn('#####');
-    console.warn('');
+    console.warn(`
+      ##### ERROR
+      ${message}
+      #####
+    `);
+  },
+  logDate: (message) => {
+    console.log(`${new Date()} ${message}`);
   },
 };
 

@@ -1,0 +1,10 @@
+{
+  "extends": "airbnb/base",
+
+  "globals": {
+    "app": true
+  },
+  "rules": {
+    "no-console": 0
+  }
+}

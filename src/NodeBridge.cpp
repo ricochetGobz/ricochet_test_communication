@@ -27,6 +27,14 @@ void NodeBridge::checkAddress(string address) {
     } else if ( address == SERVER_DOWN ) {
         cout << "Node server down" << endl;
         serverStarted = false;
+        webRenderConnected = false;
+    } else if( address == WEB_RENDER_CONNECTED ){
+        cout << "web render connected" << endl;
+        webRenderConnected = true;
+    } else if ( address == WEB_RENDER_DISCONNECTED ){
+        cout << "web render disconnected" << endl;
+        webRenderConnected = false;
+
     }
 }
 
@@ -53,4 +61,8 @@ void NodeBridge::send(string address, string arg) {
 
 bool NodeBridge::isStarted() {
     return serverStarted;
+}
+
+bool NodeBridge::webRenderIsConnected() {
+    return webRenderConnected;
 }

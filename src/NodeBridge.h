@@ -19,11 +19,14 @@
 // SENDERS
 #define OP_CONNECTED "/OPConnected"
 #define OP_DISCONNECTED "/OPDisconnected"
-#define ACTIVATE "/activate"
+#define WEB_RENDER_CONNECTED "/WRConnected"
+#define WEB_RENDER_DISCONNECTED "/WRDisconnected"
+#define ACTIVATE "/activateCube"
 
 // RECEIVERS
 #define SERVER_STARTED "/serverStarted"
 #define SERVER_DOWN "/serverDown"
+#define NEW_CUBE_CONNECTED "/newCubeConnected"
 
 class NodeBridge {
     
@@ -36,10 +39,12 @@ public:
     void sendOPDisconnected();
     void sendActivateCube(string msg);
     bool isStarted();
+    bool webRenderIsConnected();
     
     
 private:
     bool serverStarted = false;
+    bool webRenderConnected = false;
     ofxOscReceiver receive; // DOESN T WORK HERE
     ofxOscSender sender;
     

@@ -14,6 +14,8 @@ const RECEIVER_PORT = 4444;
 // RECEIVERS
 const OPEN_FRAMEWORKS_CONNECTED = '/OPConnected';
 const OPEN_FRAMEWORKS_DISCONNECTED = '/OPDisconnected';
+const WEB_RENDER_CONNECTED = '/WRConnected';
+const WEB_RENDER_DISCONNECTED = '/WRDisconnected';
 const ACTIVATE_CUBE = '/activateCube';
 // SENDERS
 const SERVER_STARTED = '/serverStarted';
@@ -64,12 +66,20 @@ export default class OFBridge {
     this._send(NEW_CUBE_CONNECTED, id);
   }
 
-  sendServerStarted() {
-    this._send(SERVER_STARTED);
+  sendServerStatus(isConnected) {
+    if (isConnected) {
+      this._send(SERVER_STARTED);
+    } else {
+      this._send(SERVER_DOWN);
+    }
   }
 
-  sendServerDown() {
-    this._send(SERVER_DOWN);
+  sendWebRenderStatus(isConnected) {
+    if (isConnected) {
+      this._send(WEB_RENDER_CONNECTED);
+    } else {
+      this._send(WEB_RENDER_DISCONNECTED);
+    }
   }
 
   /**
@@ -127,7 +137,7 @@ export default class OFBridge {
   _OPConnected() {
     if (!this.OPConnected) {
       this.OPConnected = true;
-      this._send(SERVER_STARTED);
+      this.sendServerStatus(true);
       // called only if OP not already connected
       this._checkListeners(OPEN_FRAMEWORKS_CONNECTED);
     }

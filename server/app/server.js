@@ -6,18 +6,25 @@
  */
 
 import OFBridge from './components/OFBridge';
+import WSServer from './components/WSServer';
+import Cube from './components/Cube';
 
+const cubes = {};
+const bracelets = {};
+const _OFBridge = new OFBridge();
+const _WSServer = new WSServer(() => {
+  _OFBridge.sendServerStatus(true);
+});
 
 /**
  * #########################
- * OPEN FRAMEWORK COMMUNICATION
+ * INIT OPEN FRAMEWORK
  * #########################
  */
-const _OFBridge = new OFBridge();
 
 _OFBridge.onOpenFrameworkConnected(() => {
   console.log('OPEN FRAMEWORK IS CONNECTED');
-
+  _OFBridge.sendWebRenderStatus(_WSServer.webRenderConnected());
   // _OFBridge.sendNewCubeConnected('c1');
 });
 
@@ -32,7 +39,46 @@ _OFBridge.onActivateCube((id) => {
    */
 });
 
-_OFBridge.sendServerStarted();
+/**
+ * #########################
+ * RENDER WEB EVENTS
+ * #########################
+ */
+
+_WSServer.onWebRenderStatusChange((status) => {
+  console.log(`Web Render : ${status ? 'ON' : 'OFF'}`);
+  _OFBridge.sendWebRenderStatus(status);
+  if (status) {
+    _WSServer.sendToWebRender('salut le web render !');
+  }
+});
+
+/**
+ * #########################
+ * CUBE EVENTS
+ * #########################
+ */
+
+_WSServer.onCubeConnected((idCube, idSound) => {
+  cubes[idCube] = new Cube(idCube, idSound);
+});
+
+_WSServer.onCubeDisconnected((idCube) => {
+  // TODO delete of other the cube
+  delete cubes[idCube];
+});
+
+_WSServer.onCubeTouched((idCube) => {
+  // TODO send to OF the cube of check if a new cube is see into OF.
+});
+
+_WSServer.onCubeDragged((idCube) => {
+  // TODO send to OF the cube of check if a new cube is see into OF.
+});
+
+_WSServer.onCubeDragOut((idCube) => {
+  // TODO
+});
 
 /**
  * #########################
@@ -41,8 +87,9 @@ _OFBridge.sendServerStarted();
  * http://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
  * http://stackoverflow.com/questions/21271227/can-node-js-detect-when-it-is-closed
  */
-function exit(options, err) {
-  _OFBridge.sendServerDown();
+function exit(err) {
+  _OFBridge.sendServerStatus(false);
+  // WARN : SetTimeout for waiting the sender.
   setTimeout(() => {
     if (err) console.log(err.stack);
     process.exit();

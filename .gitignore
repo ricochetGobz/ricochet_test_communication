@@ -74,13 +74,12 @@ server/npm-debug.log
 # dist
 server/public/
 
-
 ### Render ###
 
 # NPM packages folder.
-render/node_modules/
-render/npm-debug.log
+server/render/node_modules/
+server/render/npm-debug.log
 
 # Build
-render/public/style.css
-render/public/main.js
+server/render/public/style.css
+server/render/public/main.js
