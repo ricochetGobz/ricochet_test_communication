@@ -14,10 +14,9 @@ const RECEIVER_PORT = 4444;
 // RECEIVERS
 const OPEN_FRAMEWORKS_CONNECTED = '/OPConnected';
 const OPEN_FRAMEWORKS_DISCONNECTED = '/OPDisconnected';
+// SENDERS
 const WEB_RENDER_CONNECTED = '/WRConnected';
 const WEB_RENDER_DISCONNECTED = '/WRDisconnected';
-const ACTIVATE_CUBE = '/activateCube';
-// SENDERS
 const SERVER_STARTED = '/serverStarted';
 const SERVER_DOWN = '/serverDown';
 const NEW_CUBE_CONNECTED = '/newCubeConnected';
@@ -26,7 +25,7 @@ const NEW_CUBE_CONNECTED = '/newCubeConnected';
 export default class OFBridge {
   constructor() {
     // vars
-    this.OPConnected = false;
+    this._OFAlreadyConnected = false;
     this._listeners = {};
 
     // SEND MESSAGE
@@ -48,24 +47,32 @@ export default class OFBridge {
     });
   }
 
-  /**
-   * #########################
-   * SENDERS
-   * #########################
-   */
+  _onMessageReceived(msg, rinfo) {
+    const address = msg[0];
+    const content = msg[1];
+
+    console.log(`          Message receive to ${address}`);
+
+    // CALL LISTENER
+    if (typeof this._listeners[address] === 'function') {
+      this._listeners[address](content);
+    } else {
+      console.warn(`${address} address not used`);
+      console.warn(rinfo);
+    }
+  }
+
   _send(address, data) {
     const d = data || '';
     this._client.send(address, d);
   }
 
-  sendNewCubeConnected(id) {
-    if (typeof id === 'undefined') {
-      utils.logError('OFBridge.sendNewCubeConnected() -- No id into argument');
-      return;
-    }
-    this._send(NEW_CUBE_CONNECTED, id);
-  }
-
+  /**
+   * #########################
+   * SERVER EVENTS
+   */
+  // RECEIVERS
+  // SENDERS
   sendServerStatus(isConnected) {
     if (isConnected) {
       this._send(SERVER_STARTED);
@@ -74,6 +81,35 @@ export default class OFBridge {
     }
   }
 
+
+  /**
+   * #########################
+   * OPEN FRAMEWORK EVENTS
+   */
+  // RECEIVERS
+  onOFStatusChange(callback) {
+    this._listeners[OPEN_FRAMEWORKS_CONNECTED] = () => {
+      // called only if OP not already connected
+      if(!this._OFAlreadyConnected){
+        this._OFAlreadyConnected = true;
+        callback(true);
+      }
+    }
+
+    this._listeners[OPEN_FRAMEWORKS_DISCONNECTED] = () => {
+      this._OFAlreadyConnected = false;
+      callback(false);
+    }
+  }
+  // SENDERS
+
+
+  /**
+   * #########################
+   * WEB RENDER EVENTS
+   */
+  // RECEIVERS
+  // SENDERS
   sendWebRenderStatus(isConnected) {
     if (isConnected) {
       this._send(WEB_RENDER_CONNECTED);
@@ -82,69 +118,18 @@ export default class OFBridge {
     }
   }
 
+
   /**
    * #########################
-   * LISTENERS
-   * #########################
+   * CUBE EVENT
    */
-  _onMessageReceived(msg, rinfo) {
-    const address = msg[0];
-    const content = msg[1];
-
-    console.log(`          Message receive to ${address}`);
-
-    // LOCAL ACTIONS
-    switch (address) {
-      case OPEN_FRAMEWORKS_CONNECTED:
-        this._OPConnected();
-        break;
-      case OPEN_FRAMEWORKS_DISCONNECTED:
-        this._OPDisconnected();
-        break;
-      default:
-        // LISTENERS BY DEFAULT
-        if (!this._checkListeners(address, content)) {
-          console.warn(`${address} address not used`);
-          console.warn(rinfo);
-        }
-        break;
+  // RECEIVERS
+  // SENDERS
+  sendNewCubeConnected(id) {
+    if (typeof id === 'undefined') {
+      utils.logError('OFBridge.sendNewCubeConnected() -- No id into argument');
+      return;
     }
-  }
-
-  _checkListeners(address, content) {
-    if (typeof this._listeners[address] === 'function') {
-      this._listeners[address](content);
-      return true;
-    }
-    return false;
-  }
-
-  onOpenFrameworkConnected(callback) {
-    this._listeners[OPEN_FRAMEWORKS_CONNECTED] = callback;
-  }
-
-  onOpenFrameworkDisconnected(callback) {
-    this._listeners[OPEN_FRAMEWORKS_DISCONNECTED] = callback;
-  }
-
-  onActivateCube(callback) {
-    this._listeners[ACTIVATE_CUBE] = (id) => {
-      callback(id);
-    };
-  }
-
-
-  _OPConnected() {
-    if (!this.OPConnected) {
-      this.OPConnected = true;
-      this.sendServerStatus(true);
-      // called only if OP not already connected
-      this._checkListeners(OPEN_FRAMEWORKS_CONNECTED);
-    }
-  }
-
-  _OPDisconnected() {
-    this.OPConnected = false;
-    this._checkListeners(OPEN_FRAMEWORKS_DISCONNECTED);
+    this._send(NEW_CUBE_CONNECTED, id);
   }
 }

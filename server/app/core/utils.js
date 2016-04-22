@@ -9,7 +9,7 @@ const util = {
   logError: (message) => {
     console.warn(`
       ##### ERROR
-      ${message}
+    ${message}
       #####
     `);
   },

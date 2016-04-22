@@ -9,6 +9,7 @@ import OFBridge from './core/OFBridge';
 import WSServer from './core/WSServer';
 import Cube from './components/Cube';
 
+
 const cubes = {};
 const bracelets = {};
 const _OFBridge = new OFBridge();
@@ -16,27 +17,25 @@ const _WSServer = new WSServer(() => {
   _OFBridge.sendServerStatus(true);
 });
 
+let OFConnected = false;
+let webRenderConnected = false;
+let kinectConnected = false;
+
 /**
  * #########################
  * INIT OPEN FRAMEWORK
  * #########################
  */
 
-_OFBridge.onOpenFrameworkConnected(() => {
-  console.log('OPEN FRAMEWORK IS CONNECTED');
-  _OFBridge.sendWebRenderStatus(_WSServer.webRenderConnected());
-  // _OFBridge.sendNewCubeConnected('c1');
-});
-
-_OFBridge.onActivateCube((id) => {
-  console.log(`OpenFramework wants to activate the cube ${id}`);
-  // TODO send request to cube
-  // TODO send animation to webview
-  /*
-   * idCube
-   * idSound
-   * pos.x, pos.y
-   */
+_OFBridge.onOFStatusChange((isConnected) => {
+  if (isConnected) {
+    OFConnected = true;
+    _OFBridge.sendServerStatus(true);
+    _OFBridge.sendWebRenderStatus(webRenderConnected);
+  } else {
+    OFConnected = false;
+  }
+  console.log(`OPEN FRAMEWORK : ${isConnected ? 'ON' : 'OFF'}`);
 });
 
 /**
@@ -45,11 +44,13 @@ _OFBridge.onActivateCube((id) => {
  * #########################
  */
 
-_WSServer.onWebRenderStatusChange((status) => {
-  console.log(`Web Render : ${status ? 'ON' : 'OFF'}`);
-  _OFBridge.sendWebRenderStatus(status);
-  if (status) {
-    _WSServer.sendToWebRender('salut le web render !');
+_WSServer.onWebRenderStatusChange((isConnected) => {
+  webRenderConnected = isConnected;
+  console.log(`Web Render : ${isConnected ? 'ON' : 'OFF'}`);
+  _OFBridge.sendWebRenderStatus(isConnected);
+  if (isConnected) {
+    _WSServer.sendToWebRender(`OPEN FRAMEWORK : ${OFConnected ? 'ON' : 'OFF'}`);
+    // TODO check si le nombre de cube est > 0.
   }
 });
 
