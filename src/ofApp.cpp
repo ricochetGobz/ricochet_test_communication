@@ -2,6 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    ofSetLogLevel(OF_LOG_VERBOSE);
     /// Graphisme init  ///
     ofBackground(255, 255, 255);
     ofSetCircleResolution(60);
@@ -24,34 +25,39 @@ void ofApp::update(){
         
         nodeBridge.checkAddress(address);
     }
+    
+    // Kinect update
+    if(kinectConnected != kinectCapture.kinectIsConnected()){
+        kinectConnected = kinectCapture.kinectIsConnected();
+        nodeBridge.sendKinectStatusChange(kinectConnected);
+    }
+    
+    if(kinectConnected){
+        kinectCapture.update();
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    ofBackground(255);
+    ofBackground(100, 100, 100);
+    ofSetColor(255, 255, 255);
+    kinectCapture.draw();
     
     // COMMUNICATION INFORMATION
-    ofSetColor(0);
     stringstream reportStream;
-    string serverStarted = (nodeBridge.isStarted())?"ON":"OFF";
-    string webRenderConnected = (nodeBridge.webRenderIsConnected())?"ON":"OFF";
-    reportStream << "Node.js Server: " << serverStarted << endl
-    << "Web Render: " << webRenderConnected << endl
-    << "Kinect: " << "???" << endl;
-
+    reportStream << "Node.js Server: " << ((nodeBridge.isStarted())?"ON":"OFF") << endl
+    << "Web Render: " << ((nodeBridge.webRenderIsConnected())?"ON":"OFF") << endl
+    << "Kinect: " << ((kinectConnected)?"ON":"OFF - press (o) :: try to connect the kinect.") << endl;
     ofDrawBitmapString(reportStream.str(), 10, 20);
-
 }
 
 void ofApp::exit(){
-    nodeBridge.sendOPDisconnected();
+    nodeBridge.sendOFStatusChange(false);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if (key == OF_KEY_UP){
-        nodeBridge.sendActivateCube("c1");
-    }
+    kinectCapture.onKeyPressed(key);
 }
 
 //--------------------------------------------------------------

@@ -90,16 +90,16 @@ export default class OFBridge {
   onOFStatusChange(callback) {
     this._listeners[OPEN_FRAMEWORKS_CONNECTED] = () => {
       // called only if OP not already connected
-      if(!this._OFAlreadyConnected){
+      if (!this._OFAlreadyConnected) {
         this._OFAlreadyConnected = true;
         callback(true);
       }
-    }
+    };
 
     this._listeners[OPEN_FRAMEWORKS_DISCONNECTED] = () => {
       this._OFAlreadyConnected = false;
       callback(false);
-    }
+    };
   }
   // SENDERS
 

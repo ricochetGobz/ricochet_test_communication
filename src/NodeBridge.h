@@ -17,15 +17,17 @@
 #define RECEIVER_PORT 5555
 
 // SENDERS
-#define OP_CONNECTED "/OPConnected"
-#define OP_DISCONNECTED "/OPDisconnected"
-#define WEB_RENDER_CONNECTED "/WRConnected"
-#define WEB_RENDER_DISCONNECTED "/WRDisconnected"
+#define OF_CONNECTED "/OPConnected"
+#define OF_DISCONNECTED "/OPDisconnected"
+#define KINECT_CONNECTED "/KConnected"
+#define KINECT_DISCONNECTED "/KDisconnected"
 #define ACTIVATE "/activateCube"
 
 // RECEIVERS
 #define SERVER_STARTED "/serverStarted"
 #define SERVER_DOWN "/serverDown"
+#define WEB_RENDER_CONNECTED "/WRConnected"
+#define WEB_RENDER_DISCONNECTED "/WRDisconnected"
 #define NEW_CUBE_CONNECTED "/newCubeConnected"
 
 class NodeBridge {
@@ -37,7 +39,8 @@ public:
     void checkAddress(string address);
     void sendOPConnected();
     void sendOPDisconnected();
-    void sendActivateCube(string msg);
+    void sendOFStatusChange(bool isConnected);
+    void sendKinectStatusChange(bool isConnected);
     bool isStarted();
     bool webRenderIsConnected();
     

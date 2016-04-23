@@ -3,6 +3,8 @@
 #include "ofMain.h"
 #include "NodeBridge.h"
 #include "ofxOsc.h"
+#include "KinectCapture.h"
+
 
 #define RECEIVER_PORT 5555
 
@@ -29,4 +31,7 @@ class ofApp : public ofBaseApp{
     NodeBridge nodeBridge;
     // !!!! THE RECEIVER DOESN'T WORK INTO NODEBRIGDE
     ofxOscReceiver nodeBridge_receive;
+    
+    KinectCapture kinectCapture;
+    bool kinectConnected = false;
 };

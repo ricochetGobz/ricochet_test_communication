@@ -12,7 +12,7 @@
 NodeBridge::NodeBridge(){
     //receive.setup(RECEIVER_PORT);
     sender.setup( HOST, SENDER_PORT );
-    sendOPConnected();
+    sendOFStatusChange(true);
 }
 
 void NodeBridge::checkAddress(string address) {
@@ -21,7 +21,7 @@ void NodeBridge::checkAddress(string address) {
         cout << "Node server started" << endl;
         if(!serverStarted){
             cout << "Send" << endl;
-            sendOPConnected();
+            sendOFStatusChange(true);
             serverStarted = true;
         }
     } else if ( address == SERVER_DOWN ) {
@@ -38,16 +38,20 @@ void NodeBridge::checkAddress(string address) {
     }
 }
 
-void NodeBridge::sendOPConnected() {
-    send(OP_CONNECTED, "");
+void NodeBridge::sendOFStatusChange(bool isConnected) {
+    if(isConnected){
+        send(OF_CONNECTED, "");
+    } else {
+        send(OF_DISCONNECTED, "");
+    }
 }
 
-void NodeBridge::sendOPDisconnected() {
-    send(OP_DISCONNECTED, "");
-}
-
-void NodeBridge::sendActivateCube(string id) {
-    send(ACTIVATE, id);
+void NodeBridge::sendKinectStatusChange(bool isConnected) {
+    if(isConnected){
+        send(KINECT_CONNECTED, "");
+    } else {
+        send(KINECT_DISCONNECTED, "");
+    }
 }
 
 void NodeBridge::send(string address, string arg) {
