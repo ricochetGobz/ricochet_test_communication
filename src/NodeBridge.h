@@ -43,12 +43,16 @@ public:
     void sendKinectStatusChange(bool isConnected);
     bool isStarted();
     bool webRenderIsConnected();
+    bool kinectIsConnected();
+    void setKinectStatus(bool status);
     
     
 private:
     bool serverStarted = false;
     bool webRenderConnected = false;
-    ofxOscReceiver receive; // DOESN T WORK HERE
+    bool kinectConnected = false;
+
+    //ofxOscReceiver receive; // DOESN T WORK HERE
     ofxOscSender sender;
     
     void send(string address, string arg);

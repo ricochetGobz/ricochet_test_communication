@@ -33,5 +33,4 @@ class ofApp : public ofBaseApp{
     ofxOscReceiver nodeBridge_receive;
     
     KinectCapture kinectCapture;
-    bool kinectConnected = false;
 };

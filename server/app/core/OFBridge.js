@@ -14,6 +14,8 @@ const RECEIVER_PORT = 4444;
 // RECEIVERS
 const OPEN_FRAMEWORKS_CONNECTED = '/OPConnected';
 const OPEN_FRAMEWORKS_DISCONNECTED = '/OPDisconnected';
+const KINECT_CONNECTED = '/KConnected';
+const KINECT_DISCONNECTED = '/KDisconnected';
 // SENDERS
 const WEB_RENDER_CONNECTED = '/WRConnected';
 const WEB_RENDER_DISCONNECTED = '/WRDisconnected';
@@ -53,13 +55,19 @@ export default class OFBridge {
 
     console.log(`          Message receive to ${address}`);
 
-    // CALL LISTENER
-    if (typeof this._listeners[address] === 'function') {
-      this._listeners[address](content);
-    } else {
+    if (!this._callListener(address, content)) {
       console.warn(`${address} address not used`);
       console.warn(rinfo);
     }
+  }
+
+  _callListener(address, content) {
+    if (typeof this._listeners[address] === 'function') {
+      this._listeners[address](content);
+    } else {
+      return false;
+    }
+    return true;
   }
 
   _send(address, data) {
@@ -75,6 +83,7 @@ export default class OFBridge {
   // SENDERS
   sendServerStatus(isConnected) {
     if (isConnected) {
+      console.log('send server started');
       this._send(SERVER_STARTED);
     } else {
       this._send(SERVER_DOWN);
@@ -98,6 +107,16 @@ export default class OFBridge {
 
     this._listeners[OPEN_FRAMEWORKS_DISCONNECTED] = () => {
       this._OFAlreadyConnected = false;
+      this._callListener(KINECT_DISCONNECTED);
+      callback(false);
+    };
+  }
+  onKinectStatusChange(callback) {
+    this._listeners[KINECT_CONNECTED] = () => {
+      callback(true);
+    };
+
+    this._listeners[KINECT_DISCONNECTED] = () => {
       callback(false);
     };
   }

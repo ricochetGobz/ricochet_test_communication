@@ -1,6 +1,6 @@
 //
 //  KinectCapture.cpp
-//  V 0.1
+//  V 0.1.2
 //  ricochet_test_kinect
 //
 //  Created by Boulay Jérémie on 15/04/2016.
@@ -10,17 +10,25 @@
 #include "KinectCapture.h"
 
 KinectCapture::KinectCapture() {
+    nearThreshold = 230;
+    farThreshold = 70;
+    bThreshWithOpenCV = true;
+    angle = 0;
     
+    // KINECT INITIALISATION MUST BE CONTROLLED
+}
+
+void KinectCapture::init() {
     // enable depth->video image calibration
     kinect.setRegistration(true);
     
     kinect.init();
-    //kinect.init(true); // shows infrared instead of RGB video image
-    //kinect.init(false, false); // disable video image (faster fps)
+    // kinect.init(true); // shows infrared instead of RGB video image
+    // kinect.init(false, false); // disable video image (faster fps)
     
     kinect.open();		// opens first available kinect
-    //kinect.open(1);	// open a kinect by id, starting with 0 (sorted by serial # lexicographically))
-    //kinect.open("A00362A08602047A");	// open a kinect using it's unique serial #
+    // kinect.open(1);	// open a kinect by id, starting with 0 (sorted by serial # lexicographically))
+    // kinect.open("A00362A08602047A");	// open a kinect using it's unique serial #
     
     // print the intrinsic IR sensor values
     if(kinect.isConnected()) {
@@ -35,14 +43,7 @@ KinectCapture::KinectCapture() {
     grayThreshNear.allocate(kinect.width, kinect.height);
     grayThreshFar.allocate(kinect.width, kinect.height);
     
-    nearThreshold = 230;
-    farThreshold = 70;
-    bThreshWithOpenCV = true;
-    
-    ofSetFrameRate(60);
-    
     // zero the tilt on startup
-    angle = 0;
     kinect.setCameraTiltAngle(angle);
 }
 

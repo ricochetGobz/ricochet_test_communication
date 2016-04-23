@@ -1,6 +1,6 @@
 //
 //  KinectCapture.h
-//  V 0.1
+//  V 0.1.2
 //  ricochet_test_kinect
 //
 //  Created by Boulay Jérémie on 15/04/2016.
@@ -23,6 +23,7 @@ public:
     // Constructor
     KinectCapture();
     
+    void init();
     void update();
     void draw();
     void onKeyPressed(int key);

@@ -38,6 +38,12 @@ _OFBridge.onOFStatusChange((isConnected) => {
   console.log(`OPEN FRAMEWORK : ${isConnected ? 'ON' : 'OFF'}`);
 });
 
+_OFBridge.onKinectStatusChange((isConnected) => {
+  kinectConnected = isConnected;
+  console.log(`KINECT : ${isConnected ? 'ON' : 'OFF'}`);
+});
+
+
 /**
  * #########################
  * RENDER WEB EVENTS

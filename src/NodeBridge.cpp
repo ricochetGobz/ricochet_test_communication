@@ -13,6 +13,7 @@ NodeBridge::NodeBridge(){
     //receive.setup(RECEIVER_PORT);
     sender.setup( HOST, SENDER_PORT );
     sendOFStatusChange(true);
+    sendKinectStatusChange(kinectConnected);
 }
 
 void NodeBridge::checkAddress(string address) {
@@ -20,9 +21,9 @@ void NodeBridge::checkAddress(string address) {
     if(address == SERVER_STARTED ) {
         cout << "Node server started" << endl;
         if(!serverStarted){
-            cout << "Send" << endl;
-            sendOFStatusChange(true);
             serverStarted = true;
+            sendOFStatusChange(true);
+            sendKinectStatusChange(kinectConnected);
         }
     } else if ( address == SERVER_DOWN ) {
         cout << "Node server down" << endl;
@@ -69,4 +70,12 @@ bool NodeBridge::isStarted() {
 
 bool NodeBridge::webRenderIsConnected() {
     return webRenderConnected;
+}
+
+bool NodeBridge::kinectIsConnected() {
+    return kinectConnected;
+}
+
+void NodeBridge::setKinectStatus(bool status){
+    kinectConnected = status;
 }

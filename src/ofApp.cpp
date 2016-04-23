@@ -2,15 +2,17 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofSetLogLevel(OF_LOG_VERBOSE);
-    /// Graphisme init  ///
-    ofBackground(255, 255, 255);
-    ofSetCircleResolution(60);
-
     cout << "setup" << endl;
+
+    ofSetFrameRate(60);
+    ofSetLogLevel(OF_LOG_VERBOSE);
+    ofSetCircleResolution(60);
     
     nodeBridge_receive.setup(RECEIVER_PORT);
     nodeBridge = *new NodeBridge();
+    
+    // Init the kinect after OSC servers
+    kinectCapture.init();
 }
 
 //--------------------------------------------------------------
@@ -27,14 +29,12 @@ void ofApp::update(){
     }
     
     // Kinect update
-    if(kinectConnected != kinectCapture.kinectIsConnected()){
-        kinectConnected = kinectCapture.kinectIsConnected();
-        nodeBridge.sendKinectStatusChange(kinectConnected);
+    if(nodeBridge.kinectIsConnected() != kinectCapture.kinectIsConnected()){
+        nodeBridge.setKinectStatus(kinectCapture.kinectIsConnected());
+        nodeBridge.sendKinectStatusChange(nodeBridge.kinectIsConnected());
     }
     
-    if(kinectConnected){
-        kinectCapture.update();
-    }
+    kinectCapture.update();
 }
 
 //--------------------------------------------------------------
@@ -47,7 +47,7 @@ void ofApp::draw(){
     stringstream reportStream;
     reportStream << "Node.js Server: " << ((nodeBridge.isStarted())?"ON":"OFF") << endl
     << "Web Render: " << ((nodeBridge.webRenderIsConnected())?"ON":"OFF") << endl
-    << "Kinect: " << ((kinectConnected)?"ON":"OFF - press (o) :: try to connect the kinect.") << endl;
+    << "Kinect: " << ((nodeBridge.kinectIsConnected())?"ON":"OFF - press (o) :: try to connect the kinect.") << endl;
     ofDrawBitmapString(reportStream.str(), 10, 20);
 }
 
