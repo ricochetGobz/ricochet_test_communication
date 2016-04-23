@@ -23,7 +23,7 @@ let kinectConnected = false;
 
 /**
  * #########################
- * INIT OPEN FRAMEWORK
+ * OPEN FRAMEWORK
  * #########################
  */
 
@@ -35,11 +35,13 @@ _OFBridge.onOFStatusChange((isConnected) => {
   } else {
     OFConnected = false;
   }
+  _WSServer.sendOFStatusChange(isConnected);
   console.log(`OPEN FRAMEWORK : ${isConnected ? 'ON' : 'OFF'}`);
 });
 
 _OFBridge.onKinectStatusChange((isConnected) => {
   kinectConnected = isConnected;
+  _WSServer.sendKinectStatusChange(isConnected);
   console.log(`KINECT : ${isConnected ? 'ON' : 'OFF'}`);
 });
 
@@ -55,7 +57,9 @@ _WSServer.onWebRenderStatusChange((isConnected) => {
   console.log(`Web Render : ${isConnected ? 'ON' : 'OFF'}`);
   _OFBridge.sendWebRenderStatus(isConnected);
   if (isConnected) {
-    _WSServer.sendToWebRender(`OPEN FRAMEWORK : ${OFConnected ? 'ON' : 'OFF'}`);
+    _WSServer.sendOFStatusChange(OFConnected);
+    _WSServer.sendKinectStatusChange(kinectConnected);
+
     // TODO check si le nombre de cube est > 0.
   }
 });
@@ -86,6 +90,13 @@ _WSServer.onCubeDragged((idCube) => {
 _WSServer.onCubeDragOut((idCube) => {
   // TODO
 });
+
+
+/**
+* #########################
+* BRACELETS EVENTS
+* #########################
+*/
 
 /**
  * #########################

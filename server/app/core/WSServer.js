@@ -21,12 +21,15 @@ const URL_BRACELET = 'TODO';
 
 // LISTENERS
 const WEB_RENDER_STATUS_CHANGE = 'webrenderstatuschange';
+// SENDERS
+const OPEN_FRAMEWORKS_STATUS_CHANGE = 'ofstatuschange';
+const KINECT_STATUS_CHANGE = 'kinectstatuschange';
 
 export default class WSServer {
   constructor(callback) {
     this.listeners = {};
 
-    this.webRenderConnection = false;
+    this._webRenderConnection = false;
 
     this.server = http.createServer((request, response) => {
       let url = './render/public';
@@ -94,22 +97,22 @@ export default class WSServer {
   }
 
   _createWebRenderConnection(request) {
-    if (this.webRenderConnection) {
+    if (this._webRenderConnection) {
       utils.logError('web render connection already exist');
       return;
     }
 
-    this.webRenderConnection = request.accept('echo-protocol', request.origin);
+    this._webRenderConnection = request.accept('echo-protocol', request.origin);
 
     // CONNECTED
     this._callListener(WEB_RENDER_STATUS_CHANGE, true);
 
     // ON WEB RENDER RECEIVE MESSAGE
-    this._on(this.webRenderConnection, (message) => {
+    this._on(this._webRenderConnection, (message) => {
       const content = message.utf8Data;
       console.log(`Web Render send : ${content}`);
     }, () => {
-      this.webRenderConnection = false;
+      this._webRenderConnection = false;
       this._callListener(WEB_RENDER_STATUS_CHANGE, false);
     });
   }
@@ -155,16 +158,23 @@ export default class WSServer {
     };
   }
   // SENDERS
-  sendToWebRender(message) {
-    if (this.webRenderConnection) {
-      this.webRenderConnection.sendUTF(message);
+  sendOFStatusChange(isConnected) {
+    this._sendToWebRender(OPEN_FRAMEWORKS_STATUS_CHANGE, isConnected);
+  }
+  sendKinectStatusChange(isConnected) {
+    this._sendToWebRender(KINECT_STATUS_CHANGE, isConnected);
+  }
+
+  _sendToWebRender(address, data) {
+    if (this._webRenderConnection) {
+      this._webRenderConnection.sendUTF(JSON.stringify({ address, data }));
     } else {
       utils.logError('You cannot send message, web render is disconnected');
     }
   }
   // STATUS
   webRenderConnected() {
-    if (this.webRenderConnection) {
+    if (this._webRenderConnection) {
       return true;
     }
     return false;
