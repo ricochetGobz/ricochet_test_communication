@@ -10,7 +10,6 @@ const util = {
     console.warn(`
       ##### ERROR
     ${message}
-      #####
     `);
   },
   logDate: (message) => {

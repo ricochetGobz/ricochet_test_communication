@@ -28,6 +28,7 @@ export default class OFBridge {
   constructor() {
     // vars
     this._OFAlreadyConnected = false;
+    this._KinectAlreadyConnected = false;
     this._listeners = {};
 
     // SEND MESSAGE
@@ -83,7 +84,6 @@ export default class OFBridge {
   // SENDERS
   sendServerStatus(isConnected) {
     if (isConnected) {
-      console.log('send server started');
       this._send(SERVER_STARTED);
     } else {
       this._send(SERVER_DOWN);
@@ -104,20 +104,28 @@ export default class OFBridge {
         callback(true);
       }
     };
-
     this._listeners[OPEN_FRAMEWORKS_DISCONNECTED] = () => {
-      this._OFAlreadyConnected = false;
-      this._callListener(KINECT_DISCONNECTED);
-      callback(false);
+      if (this._OFAlreadyConnected) {
+        this._OFAlreadyConnected = false;
+        this._callListener(KINECT_DISCONNECTED);
+        callback(false);
+      }
     };
   }
+
   onKinectStatusChange(callback) {
     this._listeners[KINECT_CONNECTED] = () => {
-      callback(true);
+      if (!this._KinectAlreadyConnected) {
+        this._KinectAlreadyConnected = true;
+        callback(true);
+      }
     };
 
     this._listeners[KINECT_DISCONNECTED] = () => {
-      callback(false);
+      if (this._KinectAlreadyConnected) {
+        this._KinectAlreadyConnected = false;
+        callback(false);
+      }
     };
   }
   // SENDERS
