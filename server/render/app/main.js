@@ -4,41 +4,78 @@
 * The entry point of your javascript application.
 *
 **/
-import { w3cwebsocket as W3CWebSocket } from 'websocket';
 
-const PORT = 3333;
-const client = new W3CWebSocket(`ws://localhost:${PORT}/`, 'echo-protocol');
+import WSConnection from './core/WSConnection';
 
-function send(message) {
-  if (typeof message !== 'string') {
-    console.error('ERROR : Cannot send with message. It must be a string');
-    return;
-  }
-  if (client.readyState === client.OPEN) {
-    client.send(message);
+const _WSConnection = new WSConnection();
+const DOMInstallStatus = document.getElementById('install-status');
+const DOMDebug = document.getElementById('debug');
+
+let OFConnected = false;
+let kinectConnected = false;
+
+function writeInDOM(status, info) {
+  DOMInstallStatus.innerHTML = status;
+  DOMDebug.innerHTML = info;
+}
+function start() {
+  writeInDOM('ready', '');
+}
+
+function stop() {
+  writeInDOM('not ready', `Open Framework : ${OFConnected ? 'ON' : 'OFF'},
+   Kinect : ${kinectConnected ? 'ON' : 'OFF'}`);
+}
+
+function installIsReady() {
+  return (OFConnected && kinectConnected);
+}
+
+function checkInstallStatus() {
+  if (installIsReady()) {
+    start();
   } else {
-    console.error('ERROR : server is lost');
+    stop();
   }
 }
 
-
-client.onerror = () => {
-  console.log('Connection Error');
-};
-
-client.onopen = () => {
+/**
+ * #########################
+ * CONNECION TO NODE.JS
+ * #########################
+ */
+_WSConnection.onConnected(() => {
   console.log('WebSocket Client Connected');
-  send('web render connected');
-};
+});
 
-client.onclose = () => {
+_WSConnection.onError((err) => {
+  writeInDOM('???', err);
+});
+
+_WSConnection.onDisconnected(() => {
   console.log('echo-protocol Client Closed');
-};
+  writeInDOM('???', 'Disconnected to the server');
+});
 
-client.onmessage = (e) => {
-  if (typeof e.data === 'string') {
-    console.log(`Received: ${e.data}`);
-  }
+_WSConnection.onOFStatusChange((isConnected) => {
+  OFConnected = isConnected;
+  checkInstallStatus();
+});
 
-  // TODO recevoir les coordonnées des points a jouer.
-};
+_WSConnection.onKinectStatusChange((isConnected) => {
+  kinectConnected = isConnected;
+  checkInstallStatus();
+});
+
+_WSConnection.onPositionReceived((data) => {
+  // TODO
+  console.log(data);
+});
+
+/**
+ * #########################
+ * INIT
+ * #########################
+ */
+_WSConnection.init();
+checkInstallStatus();

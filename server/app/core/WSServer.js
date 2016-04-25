@@ -15,7 +15,7 @@ import utils from './utils';
 const PORT = 3333;
 
 const URL_RENDER_WEB = `http://localhost:${PORT}`;
-const URL_RENDER_WEB_DEBUG = 'http://192.168.0.47:9966';
+const URL_RENDER_WEB_DEBUG = 'http://localhost:9966';
 const URL_CUBE = 'TODO';
 const URL_BRACELET = 'TODO';
 
