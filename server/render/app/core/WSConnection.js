@@ -7,7 +7,7 @@
 
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 
-const PORT = 3333
+const PORT = 3333;
 
 const SERVER_CONNECTED = 'serverconnected';
 const SERVER_DISCONNECTED = 'serverdisconnected';
@@ -15,9 +15,7 @@ const SERVER_ERROR = 'servererror';
 // RECEIVERS
 const OPEN_FRAMEWORKS_STATUS_CHANGE = 'ofstatuschange';
 const KINECT_STATUS_CHANGE = 'kinectstatuschange';
-
-const POSITION_RECEIVED = 'positionreceived';
-
+const PLAY_CUBE = 'playcube';
 
 export default class WSConnection {
   constructor() {
@@ -94,11 +92,9 @@ export default class WSConnection {
     };
   }
 
-  onPositionReceived(callback) {
-    this._listeners[POSITION_RECEIVED] = (data) => {
-      console.log(data);
-      // TODO
-      callback(data);
+  onPlayCube(callback) {
+    this._listeners[PLAY_CUBE] = (data) => {
+      callback(JSON.parse(data));
     };
   }
 }

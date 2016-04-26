@@ -55,6 +55,10 @@ void NodeBridge::sendKinectStatusChange(bool isConnected) {
     }
 }
 
+void NodeBridge::sendPlayCube(int cubeId, int soundId, int x, int y) {
+    send(PLAY_CUBE, "{cubeId:"+ofToString(cubeId)+", soundId:"+ofToString(soundId)+", x:"+ofToString(x)+", y:"+ofToString(y)+"}");
+}
+
 void NodeBridge::send(string address, string arg) {
     ofxOscMessage m;
     m.setAddress( address );

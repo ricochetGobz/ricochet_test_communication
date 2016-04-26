@@ -45,6 +45,9 @@ _OFBridge.onKinectStatusChange((isConnected) => {
   console.log(`KINECT : ${isConnected ? 'ON' : 'OFF'}`);
 });
 
+_OFBridge.onPlayCube((d) => {
+  _WSServer.sendPlayCube(JSON.stringify(d));
+});
 
 /**
  * #########################

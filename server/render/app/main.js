@@ -10,6 +10,7 @@ import WSConnection from './core/WSConnection';
 const _WSConnection = new WSConnection();
 const DOMInstallStatus = document.getElementById('install-status');
 const DOMDebug = document.getElementById('debug');
+const DOMEvents = document.getElementById('events');
 
 let OFConnected = false;
 let kinectConnected = false;
@@ -67,9 +68,11 @@ _WSConnection.onKinectStatusChange((isConnected) => {
   checkInstallStatus();
 });
 
-_WSConnection.onPositionReceived((data) => {
-  // TODO
+_WSConnection.onPlayCube((data) => {
   console.log(data);
+  const li = document.createElement('li');
+  li.innerHTML = JSON.stringify(data);
+  DOMEvents.appendChild(li);
 });
 
 /**

@@ -21,7 +21,7 @@
 #define OF_DISCONNECTED "/OPDisconnected"
 #define KINECT_CONNECTED "/KConnected"
 #define KINECT_DISCONNECTED "/KDisconnected"
-#define ACTIVATE "/activateCube"
+#define PLAY_CUBE "/playCube"
 
 // RECEIVERS
 #define SERVER_STARTED "/serverStarted"
@@ -41,6 +41,7 @@ public:
     void sendOPDisconnected();
     void sendOFStatusChange(bool isConnected);
     void sendKinectStatusChange(bool isConnected);
+    void sendPlayCube(int cubeId, int soundId, int x, int y);
     bool isStarted();
     bool webRenderIsConnected();
     bool kinectIsConnected();

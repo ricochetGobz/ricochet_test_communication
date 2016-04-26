@@ -24,6 +24,7 @@ const WEB_RENDER_STATUS_CHANGE = 'webrenderstatuschange';
 // SENDERS
 const OPEN_FRAMEWORKS_STATUS_CHANGE = 'ofstatuschange';
 const KINECT_STATUS_CHANGE = 'kinectstatuschange';
+const PLAY_CUBE = 'playcube';
 
 export default class WSServer {
   constructor(callback) {
@@ -194,6 +195,7 @@ export default class WSServer {
    * #########################
    * CUBE EVENTS
    */
+   // RECEIVERS
   onCubeConnected(callback) {
     // TODO save callback(idCube, idSound);
   }
@@ -212,5 +214,9 @@ export default class WSServer {
 
   onCubeDragOut(callback) {
     // TODO save callback(idCube);
+  }
+  // SENDERS
+  sendPlayCube(data){
+    this._sendToWebRender(PLAY_CUBE, data);
   }
 }

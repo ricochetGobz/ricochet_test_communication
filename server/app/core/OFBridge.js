@@ -16,6 +16,7 @@ const OPEN_FRAMEWORKS_CONNECTED = '/OPConnected';
 const OPEN_FRAMEWORKS_DISCONNECTED = '/OPDisconnected';
 const KINECT_CONNECTED = '/KConnected';
 const KINECT_DISCONNECTED = '/KDisconnected';
+const PLAY_CUBE = '/playCube';
 // SENDERS
 const WEB_RENDER_CONNECTED = '/WRConnected';
 const WEB_RENDER_DISCONNECTED = '/WRDisconnected';
@@ -151,6 +152,12 @@ export default class OFBridge {
    * CUBE EVENT
    */
   // RECEIVERS
+  onPlayCube(callback) {
+    this._listeners[PLAY_CUBE] = (data) => {
+      callback(data);
+    };
+  }
+
   // SENDERS
   sendNewCubeConnected(id) {
     if (typeof id === 'undefined') {
